@@ -1,0 +1,163 @@
+class Field{
+    public Square[][] field;
+    public int field_Width = 0;
+    public int field_Height = 0;
+    public int bombCount = 0;//一時的にファブリック
+
+    public float squareSize = 0;
+
+    public int fieldMarginX = 0;
+    public int fieldMarginY = 10;
+
+    private int[][] bombLocation;
+    Field(int field_Width, int field_Height, int bombCount){
+        field = new Square[field_Width][field_Height];
+        for(int i = 0; i < field_Width; i++){
+          for(int j = 0; j < field_Height; j++){
+            field[i][j] = new Square();
+          }
+        }
+        this.field_Width = field_Width;
+        this.field_Height = field_Height;
+        this.bombCount = bombCount;
+        
+        setSquareSize();
+        
+
+        placeBomb(bombCount);
+    }
+    void setSquareSize(){
+        if(field_Height > field_Width){//大きい方にあわせる
+            if(height > width){//ちいさいほうにあわせる
+                squareSize = width / field_Height;
+            }else{
+                squareSize = height / field_Height;
+            }
+        }else{
+            if(height > width){//ちいさいほうにあわせる
+                squareSize = width / field_Width;
+            }else{
+                squareSize = height / field_Width;
+            }
+        }
+    }
+    void showBomb(int mode){
+        for(int i = 0; i < field_Width; i++){
+            for(int j = 0; j < field_Height; j++){
+                if(mode == 1 && field[i][j].isBomb == true){
+                    fill(255,0,0);
+                }
+                //fill(255);
+                setSquareSize();
+                
+                rect(squareSize * i + fieldMarginX, squareSize * j + fieldMarginY, squareSize, squareSize);
+                fill(255);
+                text(field[i][j].surroundBombCount, squareSize * i + 15 + fieldMarginX, squareSize * j + 17 + fieldMarginY);
+                fill(0);
+            }
+        }
+    }
+    public void clickedSquare(int x, int y){
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        field[x][y].addSurroundBombCount();
+        screenMode = 2;
+    }
+    void placeBomb(int bombCount){
+        bombLocation = new int[bombCount][2];
+        int[] usedX = new int[bombCount];
+        int[] usedY = new int[bombCount];
+
+        int counter = 0;
+        for(int i = 0; i < this.bombCount; i++){
+            int x = 0;
+            int y = 0;
+            boolean isUsed = true;
+                
+                for(int j = 0 ; j < i; j++){
+
+                    isUsed = true;
+                    while(isUsed){
+                        x = int(random(0, field_Width));
+                        y = int(random(0, field_Height));
+                        if(usedX[j] != x && usedY[j] != y){
+                        isUsed = false;
+                        break;
+                        }
+                    }
+                }
+                bombLocation[i] = new int[]{x,y};
+            println(i);
+        }
+        for(int i = 0; i < bombLocation.length ; i++){
+            for(int j = 0; j < bombLocation[0].length - 1 ; j ++){
+                field[bombLocation[i][0]][bombLocation[i][1]].isBomb = true; //<>//
+                setSurroundBombCount(bombLocation[i][0], bombLocation[i][1]);
+                
+            }
+        }
+    }
+    
+    private void setSurroundBombCount(int x, int y){
+        try {
+            field[x-1][y-1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x][y-1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x+1][y-1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x-1][y].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x+1][y].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x-1][y+1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x][y+1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }try {
+            field[x+1][y+1].addSurroundBombCount();
+        }catch (ArrayIndexOutOfBoundsException e) {
+            
+        }
+        
+        /*
+        if(x == 0 && y == 0){
+            field[x+1][y].addSurroundBombCount();
+            field[x][y+1].addSurroundBombCount();
+            if(y == field_Height -1){
+                field[x+1][y+1].addSurroundBombCount();
+            }
+            
+        }else if(x == 0 && y != 0){
+            field[x][y-1].addSurroundBombCount();
+            field[x+1][y-1].addSurroundBombCount();
+            field[x+1][y].addSurroundBombCount();
+            if(y == field_Height -1){
+                field[x][y+1].addSurroundBombCount();
+                field[x+1][y+1].addSurroundBombCount();
+            }
+        }else if (x != 0 && y == 0) {
+            field[x-1][y].addSurroundBombCount();
+            field[x-1][]
+            
+        }
+        */
+    }
+}
